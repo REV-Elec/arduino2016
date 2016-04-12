@@ -17,7 +17,7 @@ void loop() {
   
   analogWrite(8, i);
   i += dir;
-  if (i == 0 || i == 0x7F)
+  if (i == 0 || i == 200)
     dir = -dir;
-  delay(50);
+  delay(10);
 }
