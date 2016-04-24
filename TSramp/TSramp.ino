@@ -1,5 +1,5 @@
 const int N_TS = 2;
-const int TS_IN[] = {0, 0};
+const int TS_IN[] = {1, 2};
 const int TS_OUT[] = {5, 6};
 
 const unsigned long NEVER_TRANSITION = -1;
@@ -20,7 +20,6 @@ const int BRAKE_IN = 0;
 const int BRAKE_OUT = 9;
 
 void setup() {
-  Serial.begin(9600);
   for (int i = 0; i < N_TS; i++) {
     pinMode(TS_IN[i], INPUT_PULLUP);
     pinMode(TS_OUT[i], OUTPUT);
@@ -33,7 +32,7 @@ void setup() {
 
 void loop() {
    for (int i = 0; i < N_TS; i++) {
-     int pinVal = digitalRead(TS_IN[i]);
+     int pinVal = digitalRead(TS_IN[i]) == HIGH ? LOW : HIGH;
      if (pinVal == LOW) {
        state[i] = 0;
        transitionTime[i] = NEVER_TRANSITION;
@@ -67,14 +66,16 @@ void loop() {
          duty = 0;
          break;
      }
+     if (i == 1)
+       duty = max(duty, 50);
      analogWrite(TS_OUT[i], duty);
-     //Serial.println(duty);
    }
    
    
-   int brakeVal = digitalRead(BRAKE_IN);
+   int brakeVal = digitalRead(BRAKE_IN) == HIGH ? LOW : HIGH;
    if (brakeVal == HIGH)
      analogWrite(BRAKE_OUT, MAX_PWM);
    else
      analogWrite(BRAKE_OUT, MAX_PWM/2);
+   
 }
